@@ -28,7 +28,7 @@ app.model({
       list: [],
 
       fetchList: action.bound(async function () {
-        const list = (await app.get('/api/v1/lists')).data
+        const list = (await app.plugins.http.get('/api/v1/lists')).data
         // modify `list`
       })
     })
