@@ -1,0 +1,15 @@
+{
+  "name": "cans-plugin-http",
+  "version": "0.0.0",
+  "main": "dist/cansPluginHttp.common.js",
+  "unpkg": "dist/cansPluginHttp.js",
+  "scripts": {
+    "dist": "bili --format umd --format cjs --compress --browser --name \"cansPluginHttp\""
+  },
+  "dependencies": {
+    "axios": "^0.15.3"
+  },
+  "devDependencies": {
+    "bili": "^0.14.0"
+  }
+}
