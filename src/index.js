@@ -8,11 +8,3 @@ exports.http = (config) => {
     observable: app => config ? axios.create(config) : axios
   }
 }
-
-module.exports = {
-  namespace: 'http',
-
-  observable: app => {
-    return axios
-  }
-}

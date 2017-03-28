@@ -12,11 +12,3 @@ exports.http = function (config) {
     observable: function (app) { return config ? axios.create(config) : axios; }
   }
 };
-
-module.exports = {
-  namespace: 'http',
-
-  observable: function (app) {
-    return axios
-  }
-};

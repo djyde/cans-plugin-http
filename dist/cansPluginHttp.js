@@ -1334,12 +1334,4 @@ exports.http = function (config) {
   }
 };
 
-module.exports = {
-  namespace: 'http',
-
-  observable: function (app) {
-    return index
-  }
-};
-
 })));
