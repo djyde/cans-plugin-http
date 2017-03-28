@@ -16,11 +16,11 @@ $ yarn add cans-plugin-http
 ```js
 import cans from 'cans'
 import { observable, action } from 'cans/mobx'
-import { http } from 'cans-plugin-http'
+import httpPlugin from 'cans-plugin-http'
 
 const app = cans()
 
-app.use(http())
+app.use(httpPlugin())
 
 app.model({
   observable: app => {
