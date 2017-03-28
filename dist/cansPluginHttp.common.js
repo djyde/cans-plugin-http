@@ -6,9 +6,11 @@ var axios = _interopDefault(require('axios'));
 
 var NAMESPACE = 'http';
 
-exports.http = function (config) {
+var http = function (config) {
   return {
     namespace: NAMESPACE,
     observable: function (app) { return config ? axios.create(config) : axios; }
   }
 };
+
+module.exports = http;

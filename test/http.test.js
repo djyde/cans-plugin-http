@@ -1,6 +1,6 @@
 const cans = require('cans')
 const { observable, action } = require('cans/mobx')
-const { http } = require('../dist/cansPluginHttp.common.js')
+const httpPlugin = require('../dist/cansPluginHttp.common.js')
 const assert = require('power-assert')
 
 describe('http', () => {
@@ -9,7 +9,7 @@ describe('http', () => {
     // export default trick 😅
     const app = cans.default()
 
-    app.use(http())
+    app.use(httpPlugin())
 
     app.model({
       namespace: 'test',
@@ -44,7 +44,7 @@ describe('http', () => {
   describe('instance', () => {
     const app = cans.default()
 
-    app.use(http({
+    app.use(httpPlugin({
       baseURL: 'https://www.reddit.com/r'
     }))
 

@@ -1,7 +1,7 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory() :
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  (factory());
+  (global.cansPluginHttp = factory());
 }(this, (function () { 'use strict';
 
 var bind$2 = function bind(fn, thisArg) {
@@ -1327,11 +1327,13 @@ var index = axios_1;
 
 var NAMESPACE = 'http';
 
-exports.http = function (config) {
+var http = function (config) {
   return {
     namespace: NAMESPACE,
     observable: function (app) { return config ? index.create(config) : index; }
   }
 };
+
+return http;
 
 })));
