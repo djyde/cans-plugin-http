@@ -1,5 +1,8 @@
 # cans-plugin-http
 
+[![npm](https://img.shields.io/npm/v/cans-plugin-http.svg)](https://www.npmjs.com/package/cans-plugin-http)
+[![circle](https://circleci.com/gh/djyde/cans-plugin-http.svg?style=shield)](https://circleci.com/gh/djyde/cans-plugin-http)
+
 HTTP (axios) plugin for cans
 
 ## Install
