@@ -24,11 +24,13 @@ app.use(http())
 
 app.model({
   observable: app => {
-    list: [],
-    
-    fetchList: action.bound(async function () {
-      const list = (await app.get('/api/v1/lists')).data
-      // modify `list`
+    return observable({
+      list: [],
+
+      fetchList: action.bound(async function () {
+        const list = (await app.get('/api/v1/lists')).data
+        // modify `list`
+      })
     })
   }
 })
