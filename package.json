@@ -5,14 +5,14 @@
   "unpkg": "dist/cansPluginHttp.js",
   "scripts": {
     "test": "mocha test/",
-    "dist": "bili --format umd --format cjs --compress --browser --name \"cansPluginHttp\""
+    "dist": "bili --format umd --format cjs --browser --name \"cansPluginHttp\""
   },
   "dependencies": {
     "axios": "^0.15.3"
   },
   "devDependencies": {
     "bili": "^0.14.0",
-    "cans": "^0.0.4",
+    "cans": "^0.0.9",
     "mocha": "^3.2.0",
     "power-assert": "^1.4.2"
   }

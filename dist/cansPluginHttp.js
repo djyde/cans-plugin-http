@@ -1,8 +1,10 @@
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-  typeof define === 'function' && define.amd ? define(factory) :
-  (global.cansPluginHttp = factory());
-}(this, (function () { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+  typeof define === 'function' && define.amd ? define(['exports'], factory) :
+  (factory((global.cansPluginHttp = global.cansPluginHttp || {})));
+}(this, (function (exports) { 'use strict';
+
+function __async(g){return new Promise(function(s,j){function c(a,x){try{var r=g[x?"throw":"next"](a);}catch(e){j(e);return}r.done?s(r.value):Promise.resolve(r.value).then(c,d);}function d(e){c(e,1);}c();})}
 
 var bind$2 = function bind(fn, thisArg) {
   return function wrap() {
@@ -1325,15 +1327,67 @@ axios_1.default = default_1;
 
 var index = axios_1;
 
-var NAMESPACE = 'http';
+var HTTP_NAMESPACE = 'http';
+var REST_NAMESPACE = 'rest';
 
-var http = function (config) {
+var httpPlugin = function (config) {
   return {
-    namespace: NAMESPACE,
+    namespace: HTTP_NAMESPACE,
     observable: function (app) { return config ? index.create(config) : index; }
   }
 };
 
-return http;
+var restPlugin = function (opts) {
+  return {
+    namespace: REST_NAMESPACE,
+    observable: function (app) {
+      var storeMap = {};
+      opts.forEach(function (opt) {
+        var endpoint = (opt.url) + "/" + (opt.sourceName);
+        var o = observable({
+          data: opts.defaultData || [],
+          loading: {
+            index: false,
+            show: false,
+            update: false,
+            delete: false
+          },
+
+          index: action.bound(function () {return __async(function*(){
+            this.loading.index = true;
+            try {
+              var res = yield index.get(endpoint);
+              this.data = res.data;
+            } catch (e) {
+              throw e
+            } finally {
+              this.loading.index = false;
+            }
+          }.call(this))}),
+
+          show: action.bound(function (id) {
+            return index.get((endpoint + "/" + id))
+          }),
+
+          update: action.bound(function (id, body) {
+            return index.put((endpoint + "/" + id), body)
+          }),
+
+          delete: action.bound(function (id) {
+            return index.delete((endpoint + "/" + id))
+          })
+        });
+        storeMap[opt.sourceName] = o;
+      });
+      app.models.rest = storeMap;
+      return storeMap
+    }
+  }
+};
+
+exports.httpPlugin = httpPlugin;
+exports.restPlugin = restPlugin;
+
+Object.defineProperty(exports, '__esModule', { value: true });
 
 })));

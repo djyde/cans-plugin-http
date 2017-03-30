@@ -13,10 +13,12 @@ $ yarn add cans-plugin-http
 
 ## Usage
 
+### httpPlugin
+
 ```js
 import cans from 'cans'
 import { observable, action } from 'cans/mobx'
-import httpPlugin from 'cans-plugin-http'
+import {httpPlugin} from 'cans-plugin-http'
 
 const app = cans()
 
@@ -37,6 +39,89 @@ app.model({
 ```
 
 If you pass an object to `http()`, it will use `axios.create(config)` to create an axios instance.
+
+### restPlugin
+
+`restPlugin` is useful when your backend exposed frontend a standard RESTful interface. `restPlugin` will help you generate RESTful cans model that return a observable, which contains RESTful action and loading status:
+
+Method | Path            | action
+-------|-----------------|----------------
+GET    | /posts          | app.models.rest.posts.index
+GET    | /posts/:id      | app.models.rest.posts.show
+POST   | /posts          | app.models.rest.posts.create
+PUT    | /posts/:id      | app.models.rest.posts.update
+DELETE | /posts/:id      | app.models.rest.posts.destroy
+
+*(Inspired by [Egg](https://eggjs.org/zh-cn/basics/router.html))*
+
+#### Example
+
+```js
+import cans from 'cans'
+import { observable, action } from 'cans/mobx'
+import { restPlugin } from 'cans-plugin-http'
+
+const app = cans()
+
+const URL = 'http://jsonplaceholder.typicode.com'
+
+app.use(restPlugin([
+  { name: 'posts', url: URL }
+]))
+
+const PostList = ({ posts }) => (
+  <div>
+    {posts.map(post => (
+      <h1>{post.title}</h1>
+      <p>{post.body}</p>
+    ))}
+  </div>
+)
+
+const PostApp = inject(({ models }) => (
+  <div>
+    <button disable={models.rest.posts.loading.index} onClick={models.rest.posts.index}>Fetch</button>
+    <PostList posts={models.rest.posts.data.index} />
+  </div>
+))
+```
+
+#### restPlugin(resources)
+
+A resource contains:
+
+- name: resource name
+- url: endpoint URL
+- defaultData: { index: any, show: any } - Data fetched from `rest[name].index` will be set in `rest[name].data.index`. `show` is the same. `index` is `[]` by default. `show` is `{}` by default.
+
+#### What in `app.models.rest[name]`
+
+restPlugin create observables for every resource:
+
+```ts
+observable({
+  // data fetched from RESTful interface
+  data: {
+    index: defaultData.index || [],
+    show: defaultData.show || {}
+  },
+  // loading status
+  loading: {
+    index: boolean,
+    show: boolean,
+    create: boolean,
+    update: boolean,
+    delete: boolean
+  },
+
+  // action
+  async index(),
+  async show(id),
+  async create(data),
+  async update(id, data),
+  async delete(id)
+})
+```
 
 ## License
 

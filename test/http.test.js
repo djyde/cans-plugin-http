@@ -1,6 +1,6 @@
 const cans = require('cans')
 const { observable, action } = require('cans/mobx')
-const httpPlugin = require('../dist/cansPluginHttp.common.js')
+const { httpPlugin } = require('../dist/cansPluginHttp.common.js')
 const assert = require('power-assert')
 
 describe('http', () => {
