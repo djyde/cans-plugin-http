@@ -50,7 +50,7 @@ GET    | /posts          | app.models.rest.posts.index
 GET    | /posts/:id      | app.models.rest.posts.show
 POST   | /posts          | app.models.rest.posts.create
 PUT    | /posts/:id      | app.models.rest.posts.update
-DELETE | /posts/:id      | app.models.rest.posts.destroy
+DELETE | /posts/:id      | app.models.rest.posts.delete
 
 *(Inspired by [Egg](https://eggjs.org/zh-cn/basics/router.html))*
 
