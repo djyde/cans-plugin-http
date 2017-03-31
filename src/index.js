@@ -9,6 +9,7 @@ export const restPlugin = (app, options = {}) => {
   const resources = options.resources || []
   const storeMap = {}
   resources.forEach(resource => {
+    const totalFn = resource.total
     const endpoint = `${resource.url}/${resource.name}`
     const o = observable({
       data: resource.defaultData || {
@@ -22,11 +23,17 @@ export const restPlugin = (app, options = {}) => {
         update: false,
         delete: false
       },
+      pagination: {
+        total: 0
+      },
 
-      index: action.bound(async function () {
+      index: action.bound(async function (axiosConfig) {
         this.loading.index = true
         try {
-          const res = await axios.get(endpoint)
+          const res = await axios.get(endpoint, axiosConfig)
+          if (totalFn) {
+            this.pagination.total = totalFn(res)
+          }
           this.data.index = res.data
           return res
         } catch (e) {

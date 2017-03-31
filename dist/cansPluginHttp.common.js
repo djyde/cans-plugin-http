@@ -7,7 +7,7 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 var axios = _interopDefault(require('axios'));
 var cans_mobx = require('cans/mobx');
 
-function __async(g){return new Promise(function(s,j){function c(a,x){try{var r=g[x?"throw":"next"](a);}catch(e){j(e);return}r.done?s(r.value):Promise.resolve(r.value).then(c,d);}function d(e){c(e,1);}c();})}
+function __async(g) { return new Promise(function (s, j) { function c(a, x) { try { var r = g[x ? "throw" : "next"](a); } catch (e) { j(e); return } r.done ? s(r.value) : Promise.resolve(r.value).then(c, d); } function d(e) { c(e, 1); } c(); }) }
 
 var httpPlugin = function (app, options) {
   if ( options === void 0 ) options = {};
@@ -21,6 +21,7 @@ var restPlugin = function (app, options) {
   var resources = options.resources || [];
   var storeMap = {};
   resources.forEach(function (resource) {
+    var totalFn = resource.total;
     var endpoint = (resource.url) + "/" + (resource.name);
     var o = cans_mobx.observable({
       data: resource.defaultData || {
@@ -34,68 +35,84 @@ var restPlugin = function (app, options) {
         update: false,
         delete: false
       },
+      pagination: {
+        total: 0
+      },
 
-      index: cans_mobx.action.bound(function () {return __async(function*(){
-        this.loading.index = true;
-        try {
-          var res = yield axios.get(endpoint);
-          this.data.index = res.data;
-          return res
-        } catch (e) {
-          throw e
-        } finally {
-          this.loading.index = false;
-        }
-      }.call(this))}),
+      index: cans_mobx.action.bound(function (axiosConfig) {
+        return __async(function* () {
+          this.loading.index = true;
+          try {
+            var res = yield axios.get(endpoint, axiosConfig);
+            if (totalFn) {
+              this.pagination.total = totalFn(res);
+            }
+            this.data.index = res.data;
+            return res
+          } catch (e) {
+            throw e
+          } finally {
+            this.loading.index = false;
+          }
+        }.call(this))
+      }),
 
-      show: cans_mobx.action.bound(function (id) {return __async(function*(){
-        this.loading.show = true;
-        try {
-          var res = yield axios.get((endpoint + "/" + id));
-          this.data.show = res.data;
-          return res
-        } catch (e) {
-          throw e
-        } finally {
-          this.loading.show = false;
-        }
-      }.call(this))}),
+      show: cans_mobx.action.bound(function (id) {
+        return __async(function* () {
+          this.loading.show = true;
+          try {
+            var res = yield axios.get((endpoint + "/" + id));
+            this.data.show = res.data;
+            return res
+          } catch (e) {
+            throw e
+          } finally {
+            this.loading.show = false;
+          }
+        }.call(this))
+      }),
 
-      create: cans_mobx.action.bound(function (data) {return __async(function*(){
-        this.loading.create = true;
-        try {
-          var res = yield axios.post(("" + endpoint), data);
-          return res
-        } catch (e) {
-          throw e
-        } finally {
-          this.loading.create = false;
-        }
-      }.call(this))}),
+      create: cans_mobx.action.bound(function (data) {
+        return __async(function* () {
+          this.loading.create = true;
+          try {
+            var res = yield axios.post(("" + endpoint), data);
+            return res
+          } catch (e) {
+            throw e
+          } finally {
+            this.loading.create = false;
+          }
+        }.call(this))
+      }),
 
-      update: cans_mobx.action.bound(function (id, body) {return __async(function*(){
-        this.loading.update = true;
-        try {
-          var res = yield axios.put((endpoint + "/" + id), body);
-          return res
-        } catch (e) {
-          throw e
-        } finally {
-          this.loading.update = false;
-        }
-      }.call(this))}),
+      update: cans_mobx.action.bound(function (id, body) {
+        return __async(function* () {
+          this.loading.update = true;
+          try {
+            var res = yield axios.put((endpoint + "/" + id), body);
+            return res
+          } catch (e) {
+            throw e
+          } finally {
+            this.loading.update = false;
+          }
+        }.call(this))
+      }),
 
-      delete: cans_mobx.action.bound(function (id) {return __async(function*(){
-        this.loading.delete = true;
-        try {
-          var res = yield axios.delete((endpoint + "/" + id));
-          return res
-        } catch (e) {
-          throw e
-        } finally {
-          this.loading.delete = false;
-        }
-      }.call(this))})
+      delete: cans_mobx.action.bound(function (id) {
+        return __async(function* () {
+          this.loading.delete = true;
+          try {
+            var res = yield axios.delete((endpoint + "/" + id));
+            return res
+          } catch (e) {
+            throw e
+          } finally {
+            this.loading.delete = false;
+          }
+        }.call(this))
+      })
     });
     storeMap[resource.name] = o;
   });
