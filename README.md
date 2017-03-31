@@ -98,6 +98,7 @@ const PostApp = inject(({ models }) => (
 
   - name: resource name
   - url: endpoint URL
+  - total: (AxiosResponse) => string | number - Compute total count from response
   - defaultData: { index: any, show: any } - Data fetched from `rest[name].index` will be set in `rest[name].data.index`. `show` is the same. `index` is `[]` by default. `show` is `{}` by default.
 
 #### What in `app.models.rest[name]`
