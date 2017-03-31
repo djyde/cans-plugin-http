@@ -15,14 +15,16 @@ $ yarn add cans-plugin-http
 
 ### httpPlugin
 
+#### Example
+
 ```js
 import cans from 'cans'
 import { observable, action } from 'cans/mobx'
-import {httpPlugin} from 'cans-plugin-http'
+import { httpPlugin } from 'cans-plugin-http'
 
 const app = cans()
 
-app.use(httpPlugin())
+app.use(httpPlugin)
 
 app.model({
   observable: app => {
@@ -30,7 +32,7 @@ app.model({
       list: [],
 
       fetchList: action.bound(async function () {
-        const list = (await app.plugins.http.get('/api/v1/lists')).data
+        const list = (await app.http.get('/api/v1/lists')).data
         // modify `list`
       })
     })
@@ -38,7 +40,9 @@ app.model({
 })
 ```
 
-If you pass an object to `http()`, it will use `axios.create(config)` to create an axios instance.
+#### options
+
+- axiosConfig: AxiosConfig. If provided, `app.http` will return `axios.create(axiosConfig)`
 
 ### restPlugin
 
@@ -65,9 +69,11 @@ const app = cans()
 
 const URL = 'http://jsonplaceholder.typicode.com'
 
-app.use(restPlugin([
-  { name: 'posts', url: URL }
-]))
+app.use(restPlugin, { 
+  resources: [
+    { name: 'posts', url: URL }
+  ]
+})
 
 const PostList = ({ posts }) => (
   <div>
@@ -86,13 +92,13 @@ const PostApp = inject(({ models }) => (
 ))
 ```
 
-#### restPlugin(resources)
+#### options
 
-A resource contains:
+- resources
 
-- name: resource name
-- url: endpoint URL
-- defaultData: { index: any, show: any } - Data fetched from `rest[name].index` will be set in `rest[name].data.index`. `show` is the same. `index` is `[]` by default. `show` is `{}` by default.
+  - name: resource name
+  - url: endpoint URL
+  - defaultData: { index: any, show: any } - Data fetched from `rest[name].index` will be set in `rest[name].data.index`. `show` is the same. `index` is `[]` by default. `show` is `{}` by default.
 
 #### What in `app.models.rest[name]`
 
