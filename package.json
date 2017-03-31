@@ -1,6 +1,7 @@
 {
   "name": "cans-plugin-http",
   "version": "0.0.4",
+  "description": "HTTP (axios) plugin for cans",
   "main": "dist/cansPluginHttp.common.js",
   "unpkg": "dist/cansPluginHttp.js",
   "scripts": {
