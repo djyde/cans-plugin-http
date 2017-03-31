@@ -12,8 +12,11 @@
   },
   "devDependencies": {
     "bili": "^0.14.0",
-    "cans": "^0.0.9",
+    "cans": "^0.0.10",
     "mocha": "^3.2.0",
     "power-assert": "^1.4.2"
+  },
+  "peerDependencies": {
+    "cans": "^0.0.10"
   }
 }

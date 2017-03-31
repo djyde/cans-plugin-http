@@ -9,7 +9,7 @@ describe('http', () => {
     // export default trick 😅
     const app = cans.default()
 
-    app.use(httpPlugin())
+    app.use(httpPlugin)
 
     app.model({
       namespace: 'test',
@@ -18,7 +18,7 @@ describe('http', () => {
           data: {},
 
           click: action.bound(function () {
-            return app.plugins.http.get('https://www.reddit.com/r/reactjs.json')
+            return app.http.get('https://www.reddit.com/r/reactjs.json')
               .then(res => {
                 this.data = res.data
               })
@@ -44,9 +44,11 @@ describe('http', () => {
   describe('instance', () => {
     const app = cans.default()
 
-    app.use(httpPlugin({
-      baseURL: 'https://www.reddit.com/r'
-    }))
+    app.use(httpPlugin, {
+      axiosConfig: {
+        baseURL: 'https://www.reddit.com/r'
+      }
+    })
 
     app.model({
       namespace: 'test',
@@ -55,7 +57,7 @@ describe('http', () => {
           data: {},
 
           click: action.bound(function () {
-            return app.plugins.http.get('/reactjs.json')
+            return app.http.get('/reactjs.json')
               .then(res => {
                 this.data = res.data
               })

@@ -9,9 +9,9 @@ describe('rest', () => {
 
   const ENDPOINT = 'http://jsonplaceholder.typicode.com'
 
-  app.use(restPlugin([
-    { name: 'posts', url: ENDPOINT }
-  ]))
+  app.use(restPlugin, {
+    resources: [ { name: 'posts', url: ENDPOINT } ]
+  })
 
   it('should wait for fetching', done => {
     assert.deepEqual(app.models.rest.posts.data.index, [])
