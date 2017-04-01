@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { action, observable } from 'cans/mobx'
+import { action, observable, runInAction } from 'cans/mobx'
 
 export const httpPlugin = (app, options = {}) => {
   app.http = options.axiosConfig ? axios.create(options.axiosConfig) : axios
@@ -27,19 +27,25 @@ export const restPlugin = (app, options = {}) => {
         total: 0
       },
 
+      setLoadingStatus: action.bound(function (name, status) {
+        this.loading[name] = status
+      }),
+
       index: action.bound(async function (axiosConfig) {
         this.loading.index = true
         try {
           const res = await axios.get(endpoint, axiosConfig)
-          if (totalFn) {
-            this.pagination.total = totalFn(res)
-          }
-          this.data.index = res.data
+          runInAction('fetch resource success', () => {
+            if (totalFn) {
+              this.pagination.total = totalFn(res)
+            }
+            this.data.index = res.data
+          })
           return res
         } catch (e) {
           throw e
         } finally {
-          this.loading.index = false
+          this.setLoadingStatus('index', false)
         }
       }),
 
@@ -47,12 +53,14 @@ export const restPlugin = (app, options = {}) => {
         this.loading.show = true
         try {
           const res = await axios.get(`${endpoint}/${id}`)
-          this.data.show = res.data
+          runInAction('show resource success', () => {
+            this.data.show = res.data
+          })
           return res
         } catch (e) {
           throw e
         } finally {
-          this.loading.show = false
+          this.setLoadingStatus('show', false)
         }
       }),
 
@@ -64,7 +72,7 @@ export const restPlugin = (app, options = {}) => {
         } catch (e) {
           throw e
         } finally {
-          this.loading.create = false
+          this.setLoadingStatus('create', false)
         }
       }),
 
@@ -76,7 +84,7 @@ export const restPlugin = (app, options = {}) => {
         } catch (e) {
           throw e
         } finally {
-          this.loading.update = false
+          this.setLoadingStatus('update', false)
         }
       }),
 
@@ -88,7 +96,7 @@ export const restPlugin = (app, options = {}) => {
         } catch (e) {
           throw e
         } finally {
-          this.loading.delete = false
+          this.setLoadingStatus('delete', false)
         }
       })
     })

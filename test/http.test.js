@@ -1,7 +1,9 @@
 const cans = require('cans')
-const { observable, action } = require('cans/mobx')
+const { observable, action, useStrict } = require('cans/mobx')
 const { httpPlugin } = require('../dist/cansPluginHttp.common.js')
 const assert = require('power-assert')
+
+useStrict(true)
 
 describe('http', () => {
 
